@@ -32,7 +32,7 @@ const planSchema = new Schema({
         type:Schema.Types.ObjectId,
         ref:"Exercise"
     },
-    comments:{commentSchema}
+    comments:[{commentSchema}]
 },{timestamps:true})
 
 const Plan=new model("Plan",planSchema)
