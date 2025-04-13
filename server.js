@@ -16,8 +16,11 @@ mongoose.connection.on('connected', () => {
   console.log(`Connected to MongoDB ${mongoose.connection.name}.`);
 });
 
-app.use(cors());
+app.use(cors({
+  origin:process.env.FRONTEND_URL}
+));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(logger('dev'));
 
 // Routes go here

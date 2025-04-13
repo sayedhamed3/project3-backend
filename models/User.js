@@ -46,7 +46,7 @@ const userSchema = new Schema({
         enum: ["user", "trainer", "admin"],
         default: "user",
     },
-    lastLogin: { type: Date},
+    lastLogin: { type: Date, default: Date.now },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
 })
