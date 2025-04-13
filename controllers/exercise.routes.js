@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 // GET ALL EXERCISES
 router.get("/", verifyToken, async (req, res) => {
   try {
-    const exercises = await Exercise.find().populate("plan").select("-__v");
+    const exercises = await Exercise.find().select("-__v");
     res.json(exercises);
   } catch (error) {
     res.status(500).json({ error: error.message });
