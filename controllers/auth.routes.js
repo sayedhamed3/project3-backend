@@ -26,6 +26,11 @@ router.post("/sign-up",async(req,res)=>{
         })
         console.log(createdUser)
 
+        // check if user role is trainer and make trainer if true
+        if (createdUser.role === "trainer") {
+           await Trainer.create({ user: user._id}) // create a trainer profile linked to the user
+        }
+
 
         const convertedObject = createdUser.toObject()
         delete convertedObject.hashedPassword
@@ -61,6 +66,9 @@ router.post("/login",async(req,res)=>{
 
         // sign(payload, secret password, expirastion time)
         const token = jwt.sign({payload},process.env.JWT_SECRET,{expiresIn:"30m"})
+
+        // Update the user's last login time
+        foundUser.lastLogin = new Date()
 
         res.status(200).json({token})
 

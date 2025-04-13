@@ -1,15 +1,21 @@
 const mongoose = require('mongoose');
 
 const trainerSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true,
-        trim: true,
-    },
     specialization: {
         type: String,
         required: true,
-        enum: ['Strength Training', 'Cardio', 'Yoga', 'Pilates', 'CrossFit', 'Other'], // Change Specialization later
+        enum: [  
+            'strength_training',  
+            'weight_loss',  
+            'bodybuilding',  
+            'functional_fitness',  
+            'hiit',  
+            'yoga',  
+            'post_rehab',  
+            'senior_fitness',  
+            'sports_performance',  
+            'nutrition_coaching'  
+          ]
     },
     certifications: [
         {
