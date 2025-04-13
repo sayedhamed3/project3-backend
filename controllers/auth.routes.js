@@ -67,6 +67,9 @@ router.post("/login",async(req,res)=>{
         // sign(payload, secret password, expirastion time)
         const token = jwt.sign({payload},process.env.JWT_SECRET,{expiresIn:"30m"})
 
+        // Update the user's last login time
+        foundUser.lastLogin = new Date()
+
         res.status(200).json({token})
 
     }catch(error){
