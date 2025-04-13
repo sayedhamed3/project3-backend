@@ -68,6 +68,12 @@ router.delete("/:userId", verifyToken, async (req, res) => {
       return res.status(403).json({ error: "Admin access required" });
     }
 
+    // if user is trainer, delete trainer profile
+    const trainterToDelete = await Trainer.findOne({ user: req.params.userId });
+    if (trainterToDelete) {
+      await Trainer.findByIdAndDelete(trainerToDelete._id);
+    }
+
     await User.findByIdAndDelete(req.params.userId);
     res.status(204).send();
   } catch (error) {
