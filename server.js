@@ -10,6 +10,9 @@ const authRoutes = require("./controllers/auth.routes")
 const verifyToken = require("./middleware/verify-token")
 const planRoutes = require("./controllers/Plan.route")
 const classesRoutes = require("./controllers/classes.routes")
+const userRoutes = require("./controllers/user.routes")
+const trainerRoutes = require("./controllers/trainer.routes")
+const exerciseRoutes = require("./controllers/exercise.routes")
 mongoose.connect(process.env.MONGODB_URI);
 
 mongoose.connection.on('connected', () => {
@@ -28,6 +31,12 @@ app.use("/test-jwt",verifyToken,testJwtRouter)
 app.use("/plan",planRoutes)
 
 app.use("/classes",classesRoutes)
+
+app.use("/user",userRoutes)
+
+app.use("/trainer",trainerRoutes)
+
+app.use("/exercise",exerciseRoutes)
 
 app.listen(3000, () => {
   console.log('The express app is ready!');
