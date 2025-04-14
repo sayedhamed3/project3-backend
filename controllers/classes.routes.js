@@ -13,7 +13,7 @@ router.get("/", verifyToken, async (req, res) => {
 })
 
 // GET CLASS BY ID
-router.get("/:classId", verifyToken, async (req, res) => {
+router.get("/:classId", verifyToken, async (req, res)) => {
   try{
     // check if id is valid
     if (!mongoose.Types.ObjectId.isValid(req.params.classId)) {
