@@ -17,7 +17,7 @@ const exerciseSchema = new mongoose.Schema({
     },
     bodyPart: {
         type: String,
-        enum: ['Lower Body', 'Upper Body'],
+        enum: ['lower_body', 'upper_body', 'core', 'full_body'],
         required: true,
     },
     equipment: {
