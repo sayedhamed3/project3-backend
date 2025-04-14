@@ -13,7 +13,7 @@ router.get("/", verifyToken, async (req, res) => {
 })
 
 // GET CLASS BY ID
-router.get("/:classId", verifyToken, async (req, res)) => {
+router.get("/:classId", verifyToken, async (req, res) => {
   try{
     // check if id is valid
     if (!mongoose.Types.ObjectId.isValid(req.params.classId)) {
@@ -31,7 +31,7 @@ router.get("/:classId", verifyToken, async (req, res)) => {
   catch(error){
     res.status(500).json({ error: error.message });
   }
-}
+})
 
 
 // the bellow post route needs to be limited to users with the "trainer" role, so that only trainers can create classes
