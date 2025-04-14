@@ -22,9 +22,9 @@ const classesSchema = new Schema({
         required:true
     },
     daysOfWeek:{
-        type:[String],
+        type:[number],
         required:true,
-        enum:["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
+        enum:[0,1,2,3,4,5,6] // 0=Sunday, 1=Monday, 2=Tuesday, 3=Wednesday, 4=Thursday, 5=Friday, 6=Saturday
     },
 },{timestamps:true})
 

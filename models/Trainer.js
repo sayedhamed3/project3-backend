@@ -8,13 +8,17 @@ const trainerSchema = new mongoose.Schema({
             'strength_training',  
             'weight_loss',  
             'bodybuilding',  
-            'functional_fitness',  
             'hiit',  
             'yoga',  
-            'post_rehab',  
+            'swimming',  
             'senior_fitness',  
             'sports_performance',  
-            'nutrition_coaching'  
+            'dance_fitness',  ,
+            "boxing",
+            "crossfit",
+            "mma",
+            "pilates",
+
           ]
     },
     certifications: [

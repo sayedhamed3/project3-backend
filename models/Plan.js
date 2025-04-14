@@ -13,27 +13,35 @@ const commentSchema=new Schema({
 },{timestamps:true})
 
 const planSchema = new Schema({
-    Name:{
-        type:String,
-        required:true,
+    Name: {
+        type: String,
+        required: true,
     },
-    Maker:{
-        type:Schema.Types.ObjectId,
-        ref:"User"
+    Maker: {
+        type: Schema.Types.ObjectId,
+        ref: "User"
     },
-    Description:{
-        type:String,
+    Description: {
+        type: String,
     },
-    visibility:{
-        type:Boolean,
-        required:true
+    visibility: {
+        type: Boolean,
+        required: true
     },
-    exercise:{
-        type:Schema.Types.ObjectId,
-        ref:"Exercise"
-    },
-    comments:[{commentSchema}]
-},{timestamps:true})
+    exercises: [{
+        exercise: {
+            type: Schema.Types.ObjectId,
+            ref: "Exercise"
+        },
+        sets: [{
+            reps: {
+                type: Number,
+                required: true
+            }
+        }]
+    }],
+    comments: [commentSchema]
+}, { timestamps: true })
 
 const Plan=new model("Plan",planSchema)
 
