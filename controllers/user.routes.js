@@ -19,10 +19,10 @@ router.get("/", verifyToken, async (req, res) => {
   });
 
 // GET USER OF LOGGED IN USER
-router.get("/profile", verifyToken, async (req, res) => {
+router.get("/:userId", verifyToken, async (req, res) => {
   try {
-    const user = await User.findById(req.user.userId)
-      .select("-hashedPassword -__v"); 
+    const user = await User.findById(req.params.userId).select("-hashedPassword -__v");
+    
     res.json(user);
   } catch (error) {
     res.status(500).json({ error: error.message });
