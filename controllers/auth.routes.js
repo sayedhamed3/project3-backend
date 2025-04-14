@@ -26,11 +26,6 @@ router.post("/sign-up",async(req,res)=>{
         })
         console.log(createdUser)
 
-        // check if user role is trainer and make trainer if true
-        if (createdUser.role === "trainer") {
-           await Trainer.create({ user: user._id}) // create a trainer profile linked to the user
-        }
-
 
         const convertedObject = createdUser.toObject()
         delete convertedObject.hashedPassword

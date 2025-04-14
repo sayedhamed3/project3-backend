@@ -5,36 +5,36 @@ const verifyToken = require("../middleware/verify-token");
 const mongoose = require("mongoose");
 
 // GET TRAINER (PUBLIC)
-router.get("/:trainerId", async (req, res) => {
+router.get("/:userId", async (req, res) => {
   try {
-    const trainer = await Trainer.findById(req.params.trainerId)
-      .populate("user", "name avatar") // Show linked user details
-      .select("-__v");
+    const trainer = await Trainer.findOne({ user: req.params.userId}).select("-__v");
     res.json(trainer);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-// CREATE TRAINER
-router.post("/", verifyToken, async (req, res) => {
+// GET ALL TRAINERS
+router.get("/", async (req, res) => {
   try {
-    // check if user is trainer
-    const user = await User.findById(req.user.userId);
-    if (user.role !== "trainer") {
-      return res.status(403).json({ error: "User is not a trainer" });
-    }
+    const trainers = await Trainer.find().select("-__v");
+    res.json(trainers);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// CREATE TRAINER
+router.post("/", async (req, res) => {
+  try {
 
     // check if existsing trainer profile
-    const existingTrainer = await Trainer.findOne({ user: req.user.userId });
+    const existingTrainer = await Trainer.findOne({ user: req.body.user });
     if (existingTrainer) {
       return res.status(409).json({ error: "Trainer profile already exists" });
     }
 
-    const newTrainer = await Trainer.create({
-      ...req.body,
-      user: req.user.userId 
-    });
+    const newTrainer = await Trainer.create(req.body);
     res.status(201).json(newTrainer);
   } catch (error) {
     res.status(500).json({ error: error.message });
