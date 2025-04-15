@@ -80,4 +80,43 @@ router.delete("/:classId", verifyToken, async (req, res) => {
   }
 })
 
+// REGISTER USER FOR CLASS
+router.post("/:classId/register", verifyToken, async (req, res) => {
+  try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.classId)) {
+      return res.status(400).json({ error: "Invalid Class ID" });
+    }
+    const foundClass = await Classes.findById(req.params.classId);
+    if (foundClass.registeredUsers.includes(req.user._id)) {
+      return res.status(400).json({ error: "You are already registered for this class" });
+    }
+    if (foundClass.capacity <= foundClass.registeredUsers.length) {
+      return res.status(400).json({ error: "Class is full" });
+    }
+    foundClass.registeredUsers.push(req.user._id);
+    await foundClass.save();
+    res.json(foundClass);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+})
+
+// UNREGISTER USER FROM CLASS
+router.post("/:classId/unregister", verifyToken, async (req, res) => {
+  try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.classId)) {
+      return res.status(400).json({ error: "Invalid Class ID" });
+    }
+    const foundClass = await Classes.findById(req.params.classId);
+    if (!foundClass.registeredUsers.includes(req.user._id)) {
+      return res.status(400).json({ error: "You are not registered for this class" });
+    }
+    foundClass.registeredUsers.pull(req.user._id);
+    await foundClass.save();
+    res.json(foundClass);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+})
+
 module.exports = router;
