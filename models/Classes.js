@@ -1,6 +1,10 @@
 const {Schema,model}=require('mongoose')
 
 const classesSchema = new Schema({
+    name:{
+        type:String,
+        required:true,
+    },
     plan:{
         type:Schema.Types.ObjectId,
         ref:"Plan"
