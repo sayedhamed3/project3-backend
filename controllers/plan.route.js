@@ -16,7 +16,7 @@ router.get("/",verifyToken,async(req,res)=>{
 }
 )
 
-roueter.get("/:planId",verifyToken,async(req,res)=>{
+router.get("/:planId",verifyToken,async(req,res)=>{
     try{
         const foundPlan = await Plan.findById(req.params.Planid).populate("Maker","comments.author","exercises.exercise")
         res.json(foundPlan)
