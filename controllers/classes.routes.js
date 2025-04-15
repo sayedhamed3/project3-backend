@@ -5,7 +5,7 @@ const verifyToken = require("../middleware/verify-token");
 
 router.get("/", verifyToken, async (req, res) => {
   try {
-    const allClasses = await Classes.find().populate(["plan","trainer","startTime","endTime","capacity","daysOfWeek"])
+    const allClasses = await Classes.find().populate(["name","plan","trainer","startTime","endTime","capacity","daysOfWeek"])
     res.json(allClasses);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -20,7 +20,7 @@ router.get("/:classId", verifyToken, async (req, res) => {
       return res.status(400).json({ error: "Invalid Class ID" });
     }
     
-    const foundClass = await Classes.findById(req.params.classId).populate("plan","trainer");
+    const foundClass = await Classes.findById(req.params.classId).populate("name","plan","trainer");
 
     // check if class exists
     if (!foundClass) {

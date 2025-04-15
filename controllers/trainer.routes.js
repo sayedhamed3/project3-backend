@@ -4,6 +4,18 @@ const User = require("../models/User");
 const verifyToken = require("../middleware/verify-token");
 const mongoose = require("mongoose");
 
+// GET ALL TRAINERS (PUBLIC)
+router.get("/", async (req, res) => {
+  try {
+    const trainers = await Trainer.find()
+      .populate("user", "name avatar") // Show linked user details
+      .select("-__v");
+    res.json(trainers);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // GET TRAINER (PUBLIC)
 router.get("/:trainerId", async (req, res) => {
   try {
