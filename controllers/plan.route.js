@@ -7,7 +7,7 @@ const e = require('express')
 
 router.get("/",verifyToken,async(req,res)=>{
     try{
-        const allPlans = await Plan.find({visibility:true}).populate("Maker","comments.author")
+        const allPlans = await Plan.find({visibility:true}).populate("Maker","comments.author","exercises.exercise")
         res.json(allPlans)
     }
     catch(error){
@@ -16,12 +16,22 @@ router.get("/",verifyToken,async(req,res)=>{
 }
 )
 
+router.get("/:planId",verifyToken,async(req,res)=>{
+    try{
+        const foundPlan = await Plan.findById(req.params.Planid).populate("Maker","comments.author","exercises.exercise")
+        res.json(foundPlan)
+    }
+    catch(error){
+        res.status(500).json({error:error.message})
+    }
+})
+
 router.get("/private", verifyToken, async (req, res) => {
     try {
         const privatePlans = await Plan.find({
             visibility: false,
             Maker: req.user._id 
-        }).populate("Maker","comments.author");
+        }).populate("Maker","comments.author","exercises.exercise");
         
         res.json(privatePlans);
     } catch (error) {
@@ -88,5 +98,120 @@ router.post("/:Planid/comment",verifyToken,async(req,res)=>{
         res.status(500).json({error:error.message})
     }
 })
+
+router.post("/:Planid/exercise", verifyToken, async (req, res) => {
+    try {
+        const { exerciseId, sets } = req.body;
+ 
+        if (!exerciseId || !sets || !Array.isArray(sets)) {
+            return res.status(400).json({ error: "exerciseId and sets array are required" });
+        }
+
+        const foundPlan = await Plan.findById(req.params.Planid);
+        const foundExercise = await Exercise.findById(exerciseId);
+        
+        if (!foundPlan || !foundExercise) {
+            return res.status(404).json({ error: "Plan or Exercise not found" });
+        }
+
+        const validatedSets = sets.map(set => {
+            if (!set.reps || typeof set.reps !== 'number') {
+                throw new Error("Each set must have a numeric reps value");
+            }
+            return { reps: set.reps };
+        });
+
+        foundPlan.exercises.push({
+            exercise: foundExercise._id,
+            sets: validatedSets
+        });
+        
+        await foundPlan.save();
+        res.status(201).json(foundPlan);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.put("/:Planid/exercise/:exerciseId", verifyToken, async (req, res) => {
+    try {
+        const { sets } = req.body;
+        const foundPlan = await Plan.findById(req.params.Planid);
+        
+        if (!foundPlan) {
+            return res.status(404).json({ error: "Plan not found" });
+        }
+
+        const planExercise = foundPlan.exercises.find(
+            ex => ex.exercise.toString() === req.params.exerciseId
+        );
+
+        if (!planExercise) {
+            return res.status(404).json({ error: "Exercise not found in plan" });
+        }
+
+        // Validate and update sets
+        if (sets && Array.isArray(sets)) {
+            planExercise.sets = sets.map(set => {
+                if (!set.reps || typeof set.reps !== 'number') {
+                    throw new Error("Each set must have a numeric reps value");
+                }
+                return { reps: set.reps };
+            });
+        }
+
+        await foundPlan.save();
+        res.status(200).json(foundPlan);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.delete("/:Planid/exercise/:exerciseId", verifyToken, async (req, res) => {
+    try {
+        const foundPlan = await Plan.findById(req.params.Planid);
+        
+        if (!foundPlan) {
+            return res.status(404).json({ error: "Plan not found" });
+        }
+
+        const exerciseIndex = foundPlan.exercises.findIndex(
+            ex => ex.exercise.toString() === req.params.exerciseId
+        );
+
+        if (exerciseIndex === -1) {
+            return res.status(404).json({ error: "Exercise not found in plan" });
+        }
+
+        foundPlan.exercises.splice(exerciseIndex, 1);
+        await foundPlan.save();
+        res.status(200).json(foundPlan);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+})
+
+router.get("/:Planid/exercise/:exerciseId", verifyToken, async (req, res) => {
+    try {
+        const foundPlan = await Plan.findById(req.params.Planid)
+            .populate('exercises.exercise');
+        
+        if (!foundPlan) {
+            return res.status(404).json({ error: "Plan not found" });
+        }
+
+        const planExercise = foundPlan.exercises.find(
+            ex => ex.exercise._id.toString() === req.params.exerciseId
+        );
+
+        if (!planExercise) {
+            return res.status(404).json({ error: "Exercise not found in plan" });
+        }
+
+        res.status(200).json(planExercise);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
 
 module.exports = router

@@ -21,6 +21,10 @@ const classesSchema = new Schema({
         type:Date,
         required:true
     },
+    registeredUsers:[{
+        type:Schema.Types.ObjectId,
+        ref:"User"
+    }],
     capacity:{
         type:Number,
         required:true
