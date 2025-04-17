@@ -5,6 +5,19 @@ const verifyToken = require("../middleware/verify-token")
 const mongoose = require('mongoose')
 const e = require('express')
 
+router.get("/private", verifyToken, async (req, res) => {
+    try {
+        const privatePlans = await Plan.find({
+            visibility: false,
+            Maker: req.user._id 
+        }).populate("Maker", "name").populate("comments.author", "name").populate("exercises.exercise");
+        
+        res.json(privatePlans);
+    } catch (error) {
+        res.status(500).json({error:error.message});
+    }
+});
+
 router.get("/",verifyToken,async(req,res)=>{
     try{
         const allPlans = await Plan.find({visibility:true}).populate("Maker", "name").populate("comments.author", "name").populate("exercises.exercise")
@@ -26,18 +39,7 @@ router.get("/:planId",verifyToken,async(req,res)=>{
     }
 })
 
-router.get("/private", verifyToken, async (req, res) => {
-    try {
-        const privatePlans = await Plan.find({
-            visibility: false,
-            Maker: req.user._id 
-        }).populate("Maker", "name").populate("comments.author", "name").populate("exercises.exercise");
-        
-        res.json(privatePlans);
-    } catch (error) {
-        res.status(500).json({error:error.message});
-    }
-});
+
 
 router.post("/",verifyToken,async(req,res)=>{
     try{
