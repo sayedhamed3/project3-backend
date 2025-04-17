@@ -39,7 +39,7 @@ router.put("/:userId", verifyToken, async (req, res) => {
     }
 
     // check if admin or logged in user
-    if (req.params.userId !== req.user.userId && req.user.role !== "admin") {
+    if (req.params.userId !== req.user._id && req.user.role !== "admin") {
       return res.status(403).json({ error: "Not authorized" });
     }
 
