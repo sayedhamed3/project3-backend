@@ -3,6 +3,8 @@ const User = require("../models/User");
 const verifyToken = require("../middleware/verify-token");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
+const Trainer = require('../models/Trainer');
+const Plan = require('../models/Plan');
 
 // GET ALL USERS
 router.get("/", verifyToken, async (req, res) => {
@@ -73,6 +75,9 @@ router.delete("/:userId", verifyToken, async (req, res) => {
     if (trainerToDelete) {
       await Trainer.findByIdAndDelete(trainerToDelete._id);
     }
+
+    // Delete all associated Plans
+    await Plan.deleteMany({ Maker: req.params.userId })
 
     await User.findByIdAndDelete(req.params.userId);
     res.status(204).send();
