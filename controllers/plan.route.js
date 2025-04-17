@@ -7,7 +7,7 @@ const e = require('express')
 
 router.get("/",verifyToken,async(req,res)=>{
     try{
-        const allPlans = await Plan.find({visibility:true}).populate("Maker","comments.author","exercises.exercise")
+        const allPlans = await Plan.find({visibility:true}).populate("Maker", "name").populate("comments.author", "name").populate("exercises.exercise")
         res.json(allPlans)
     }
     catch(error){
@@ -18,7 +18,7 @@ router.get("/",verifyToken,async(req,res)=>{
 
 router.get("/:planId",verifyToken,async(req,res)=>{
     try{
-        const foundPlan = await Plan.findById(req.params.Planid).populate("Maker","comments.author","exercises.exercise")
+        const foundPlan = await Plan.findById(req.params.planid).populate("Maker", "name").populate("comments.author", "name").populate("exercises.exercise");
         res.json(foundPlan)
     }
     catch(error){
@@ -31,7 +31,7 @@ router.get("/private", verifyToken, async (req, res) => {
         const privatePlans = await Plan.find({
             visibility: false,
             Maker: req.user._id 
-        }).populate("Maker","comments.author","exercises.exercise");
+        }).populate("Maker", "name").populate("comments.author", "name").populate("exercises.exercise");
         
         res.json(privatePlans);
     } catch (error) {
