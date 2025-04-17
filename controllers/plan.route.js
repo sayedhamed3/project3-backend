@@ -18,7 +18,7 @@ router.get("/",verifyToken,async(req,res)=>{
 
 router.get("/:planId",verifyToken,async(req,res)=>{
     try{
-        const foundPlan = await Plan.findById(req.params.planid).populate("Maker", "name").populate("comments.author", "name").populate("exercises.exercise");
+        const foundPlan = await Plan.findById(req.params.planId).populate("Maker", "name").populate("comments.author", "name").populate("exercises.exercise");
         res.json(foundPlan)
     }
     catch(error){
