@@ -69,8 +69,8 @@ router.delete("/:userId", verifyToken, async (req, res) => {
     }
 
     // if user is trainer, delete trainer profile
-    const trainterToDelete = await Trainer.findOne({ user: req.params.userId });
-    if (trainterToDelete) {
+    const trainerToDelete = await Trainer.findOne({ user: req.params.userId });
+    if (trainerToDelete) {
       await Trainer.findByIdAndDelete(trainerToDelete._id);
     }
 
