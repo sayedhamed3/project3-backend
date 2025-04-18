@@ -23,7 +23,7 @@ router.get("/:classId", verifyToken, async (req, res) => {
     }
     
 
-    const foundClass = await Classes.findById(req.params.classId).populate("plan","trainer","registeredUsers");
+    const foundClass = await Classes.findById(req.params.classId).populate("plan trainer registeredUsers");
 
 
     // check if class exists
@@ -74,7 +74,7 @@ router.delete("/:classId", verifyToken, async (req, res) => {
       return res.status(400).json({ error: "Invalid Class ID" });
     }
     const foundClass = await Classes.findById(req.params.classId);
-    if (!foundClass.trainer.equals(req.user._id)) {
+    if (req.user.role !== "admin" || !foundClass.trainer.equals(req.user._id)) {
       return res.status(403).json({ error: "You are not authorized to delete this class" });
     }
     await Classes.findByIdAndDelete(req.params.classId);
