@@ -41,7 +41,7 @@ router.get("/:classId", verifyToken, async (req, res) => {
 // the bellow post route needs to be limited to users with the "trainer" role, so that only trainers can create classes
 router.post("/", verifyToken, async (req, res) => {
   try {
-    if (req.user.role !== "trainer") {
+    if (req.user.role !== "trainer" && req.user.role !== "admin") {
         return res.status(403).json({ error: "Only trainers can create classes" });
       }
     req.body.trainer = req.user._id;
